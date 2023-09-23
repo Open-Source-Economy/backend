@@ -9,8 +9,8 @@ pub struct Project {
 
     pub created_at: i64,
 
-    /// Bump of the pda
-    pub bump: [u8; 1],
+    /// Bump of the config
+    pub bump: [u8; 1], // TODO: to I need to store this? No itialized for the the moment
 }
 
 impl Project {
