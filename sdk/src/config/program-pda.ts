@@ -1,26 +1,18 @@
 import * as anchor from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
-import { programId } from "./program-id";
+import { associatedAddress } from "@coral-xyz/anchor/dist/cjs/utils/token";
 
 export const programPda = {
-  project: function (owner: string, repository: string): [PublicKey, number] {
-    return anchor.web3.PublicKey.findProgramAddressSync(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("project")),
-        Buffer.from(anchor.utils.bytes.utf8.encode(owner)),
-        Buffer.from(anchor.utils.bytes.utf8.encode(repository)),
-      ],
-      programId
-    );
+  project: function (owner: string, repository: string, programId: PublicKey): [PublicKey, number] {
+    return anchor.web3.PublicKey.findProgramAddressSync([Buffer.from("project"), Buffer.from(owner), Buffer.from(repository)], programId);
   },
-
-  abc: function (owner: string, repository: string): [PublicKey, number] {
+  treasury: function (owner: string, repository: string, tokenMintAddress: PublicKey, programId: PublicKey): PublicKey {
+    const [project, _] = this.project(owner, repository, programId);
+    return associatedAddress({ mint: tokenMintAddress, owner: project });
+  },
+  abcReserve: function (owner: string, repository: string, tokenMintAddress: PublicKey, programId: PublicKey): [PublicKey, number] {
     return anchor.web3.PublicKey.findProgramAddressSync(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("abc")),
-        Buffer.from(anchor.utils.bytes.utf8.encode(owner)),
-        Buffer.from(anchor.utils.bytes.utf8.encode(repository)),
-      ],
+      [Buffer.from("abc_reserve"), Buffer.from(owner), Buffer.from(repository), tokenMintAddress.toBuffer()],
       programId
     );
   },

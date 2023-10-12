@@ -1,24 +1,32 @@
 use anchor_lang::prelude::*;
 
+use crate::state::ABC;
 use std::mem::size_of;
 
 #[account]
 pub struct Project {
     pub owner: String,
     pub repository: String,
+    pub project_token_mint: Pubkey,
 
     pub created_at: i64,
 
+    pub abc: Option<ABC>,
+
     /// Bump of the config
-    pub bump: [u8; 1], // TODO: to I need to store this? No itialized for the the moment
+    pub bump: [u8; 1],
 }
 
 impl Project {
-    // TODO
     pub const LEN: usize = size_of::<Project>();
-    // DISCRIMINATOR_LENGTH
-    // + PUBLIC_KEY_LENGTH // Author.
-    // + TIMESTAMP_LENGTH // Timestamp.
-    // + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
-    // + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH; // Content.
+
+    /// Returns the signer seed of a vault
+    pub fn seeds(&self) -> [&[u8]; 4] {
+        [
+            &b"project"[..],
+            self.owner.as_ref(),
+            self.repository.as_ref(),
+            self.bump.as_ref(),
+        ]
+    }
 }
