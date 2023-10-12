@@ -64,8 +64,6 @@ describe("Integration test", async () => {
   });
 
   describe("mintProjectToken", async () => {
-    let mintProjectTokenParams: MintProjectTokenParams;
-
     before("Call", async () => {
       const project: Project = await fixture.dataFetcher.getProject(owner, repository);
       const abc: ABC = await fixture.dataFetcher.getABC(owner, repository);
@@ -76,7 +74,7 @@ describe("Integration test", async () => {
       const quoteAmount: BN = new BN(50);
       const mintData: MintData = abcUtils.getMintDataFromQuote(quoteAmount);
 
-      mintProjectTokenParams = await user.paramsBuilder.mintProjectToken(project, mintData.minProjectTokenMinted, mintData.quoteAmount);
+      const mintProjectTokenParams = await user.paramsBuilder.mintProjectToken(project, mintData.minProjectTokenMinted, mintData.quoteAmount);
       await user.mintProjectToken(mintProjectTokenParams);
     });
 
@@ -102,8 +100,6 @@ describe("Integration test", async () => {
   });
 
   describe("redeemProjectToken redeem 2/5", async () => {
-    let redeemProjectTokenParams: RedeemProjectTokenParams;
-
     before("Call", async () => {
       const project: Project = await fixture.dataFetcher.getProject(owner, repository);
       const abc: ABC = await fixture.dataFetcher.getABC(owner, repository);
@@ -114,7 +110,7 @@ describe("Integration test", async () => {
       const projectTokenAmount: BN = new BN(200);
       const redeemData: RedeemData = abcUtils.getRedeemDataFromProjectToken(projectTokenAmount);
 
-      redeemProjectTokenParams = await user.paramsBuilder.redeemProjectToken(project, redeemData.projectTokenAmount, redeemData.minQuoteAmount);
+      const redeemProjectTokenParams = await user.paramsBuilder.redeemProjectToken(project, redeemData.projectTokenAmount, redeemData.minQuoteAmount);
       await user.redeemProjectToken(redeemProjectTokenParams);
     });
 
@@ -140,8 +136,6 @@ describe("Integration test", async () => {
   });
 
   describe("redeemProjectToken redeem 3/5", async () => {
-    let redeemProjectTokenParams: RedeemProjectTokenParams;
-
     before("Call", async () => {
       const project: Project = await fixture.dataFetcher.getProject(owner, repository);
       const abc: ABC = await fixture.dataFetcher.getABC(owner, repository);
@@ -152,7 +146,7 @@ describe("Integration test", async () => {
       const projectTokenAmount: BN = new BN(300);
       const redeemData: RedeemData = abcUtils.getRedeemDataFromProjectToken(projectTokenAmount);
 
-      redeemProjectTokenParams = await user.paramsBuilder.redeemProjectToken(project, redeemData.projectTokenAmount, redeemData.minQuoteAmount);
+      const redeemProjectTokenParams = await user.paramsBuilder.redeemProjectToken(project, redeemData.projectTokenAmount, redeemData.minQuoteAmount);
       await user.redeemProjectToken(redeemProjectTokenParams);
     });
 
@@ -162,6 +156,41 @@ describe("Integration test", async () => {
       const expectedAbcReserveQuoteAmount: BN = new BN(1); // previous - projectTokenAmount * constantRedeem = 8 - (300 * 0.0255 rounded down) = 8 - (7.65 rounded down)
       const expectedTreasuryQuoteAmount: BN = new BN(37); // previous
       const expectedTreasuryProjectTokenAmount: BN = new BN(0); // previous
+
+      const userQuoteAmount: BN = await user.getAssociatedTokenAmount(quoteTokenMint);
+      const userProjectTokenAmount: BN = await user.getAssociatedTokenAmount(projectTokenKeyPair.publicKey);
+      const abcReserveQuoteAmount: BN = await user.getAbcReserveAmount(owner, repository, quoteTokenMint, program.programId);
+      const treasuryQuoteAmount: BN = await user.getTreasuryAmount(owner, repository, quoteTokenMint, program.programId);
+      const treasuryProjectTokenAmount: BN = await user.getTreasuryAmount(owner, repository, projectTokenKeyPair.publicKey, program.programId);
+
+      assert.deepEqual(userQuoteAmount, expectedUserQuoteAmount);
+      assert.deepEqual(userProjectTokenAmount, expectedUserProjectTokenAmount);
+      assert.deepEqual(abcReserveQuoteAmount, expectedAbcReserveQuoteAmount);
+      assert.deepEqual(treasuryQuoteAmount, expectedTreasuryQuoteAmount);
+      assert.deepEqual(treasuryProjectTokenAmount, expectedTreasuryProjectTokenAmount);
+    });
+  });
+
+  describe("donate", async () => {
+    before("Call", async () => {
+      const project: Project = await fixture.dataFetcher.getProject(owner, repository);
+      const abc: ABC = await fixture.dataFetcher.getABC(owner, repository);
+      const abcUtils: AbcUtils = new AbcUtils(abc);
+
+      await fixture.createAssociatedTokenAccount(user, projectTokenKeyPair.publicKey);
+
+      const quoteAmount: BN = new BN(62);
+      const mintProjectTokenParams = await user.paramsBuilder.donate(project, quoteAmount);
+
+      await user.donate(mintProjectTokenParams);
+    });
+
+    it("Amounts are correct", async () => {
+      const expectedUserQuoteAmount: BN = new BN(900); // previous - quoteAmount = 962 - 62 = 900
+      const expectedUserProjectTokenAmount: BN = new BN(0); // previous
+      const expectedAbcReserveQuoteAmount: BN = new BN(17); // previous + expectedTreasuryProjectTokenAmount * constantRedeem = 1 + 620 * 0.0255 = 1 + 15.81 rounded up
+      const expectedTreasuryQuoteAmount: BN = new BN(83); // previous + quoteAmount - expectedAbcReserveQuoteAmount = 37 + 62 - 16 = 83
+      const expectedTreasuryProjectTokenAmount: BN = new BN(620); // quoteAmount / constantMint = 62 / 0.1 = 620
 
       const userQuoteAmount: BN = await user.getAssociatedTokenAmount(quoteTokenMint);
       const userProjectTokenAmount: BN = await user.getAssociatedTokenAmount(projectTokenKeyPair.publicKey);

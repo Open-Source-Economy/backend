@@ -1,12 +1,11 @@
 import { PublicKey, Transaction, TransactionSignature } from "@solana/web3.js";
 import { Context } from "./context";
-import { InitializeParams, ParamsBuilder, SetUpAbcParams } from "./params";
+import { DonateParams, InitializeParams, ParamsBuilder, RedeemProjectTokenParams, SetUpAbcParams } from "./params";
 import { MintProjectTokenParams } from "./params/mint-project-token";
 import { associatedAddress } from "@coral-xyz/anchor/dist/cjs/utils/token";
 import { getAccount, NATIVE_MINT } from "@solana/spl-token";
 import BN from "bn.js";
 import { programPda } from "./config";
-import { RedeemProjectTokenParams } from "./params/redeem-project-token";
 
 /**
  * This needs to be re-instantiated every time the alpha4 context or the vault address are updated (when the user goes to another view with another vault)
@@ -51,6 +50,11 @@ export class Client {
       .redeemProjectToken(params.args.projectTokenAmount, params.args.minQuoteAmount)
       .accounts(params.accounts)
       .transaction();
+    return this.context.provider.sendAndConfirm(tx, params.signers, { skipPreflight: this.skipPreflight });
+  }
+
+  async donate(params: DonateParams): Promise<TransactionSignature> {
+    const tx: Transaction = await this.context.program.methods.donate(params.args.quoteAmount).accounts(params.accounts).transaction();
     return this.context.provider.sendAndConfirm(tx, params.signers, { skipPreflight: this.skipPreflight });
   }
 

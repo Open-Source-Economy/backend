@@ -70,7 +70,8 @@ pub struct MintProjectToken<'info> {
     /// No need to force it to be an associated token account.
     #[account(
         mut,
-        token::mint = quote_token_mint
+        token::mint = quote_token_mint,
+        token::authority = user
     )]
     pub user_quote_token_account: Box<Account<'info, TokenAccount>>,
 

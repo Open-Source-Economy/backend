@@ -3,13 +3,14 @@ import * as anchor from "@coral-xyz/anchor";
 import { InitializeParams } from "./initialize";
 import { programPda } from "../config";
 import { SetUpAbcParams } from "./set-up-abc";
-import { Keypair, PublicKey, Signer } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 import { associatedAddress, TOKEN_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 import { ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { MintProjectTokenParams } from "./mint-project-token";
 import { Project } from "../data-fetcher";
 import BN from "bn.js";
 import { RedeemProjectTokenParams } from "./redeem-project-token";
+import { DonateParams } from "./donate";
 
 /**
  * Handle Alpha4Vault params
@@ -110,6 +111,32 @@ export class ParamsBuilder {
         quoteTokenMint: project.abc.quoteTokenMint,
         quoteAbcReserve: quoteAbcReserve,
         userProjectTokenAccount: associatedAddress({ mint: project.projectTokenMint, owner: this.context.provider.publicKey }),
+        userQuoteTokenAccount: associatedAddress({ mint: project.abc.quoteTokenMint, owner: this.context.provider.publicKey }),
+        systemProgram: anchor.web3.SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      },
+      signers: [],
+    };
+  }
+
+  async donate(project: Project, quoteAmount: BN): Promise<DonateParams> {
+    const [projectAddress] = programPda.project(project.owner, project.repository, this.context.program.programId);
+    const quoteTreasury = programPda.treasury(project.owner, project.repository, project.abc.quoteTokenMint, this.context.program.programId);
+    const projectTokenTreasury = programPda.treasury(project.owner, project.repository, project.projectTokenMint, this.context.program.programId);
+    const [quoteAbcReserve] = programPda.abcReserve(project.owner, project.repository, project.abc.quoteTokenMint, this.context.program.programId);
+
+    return {
+      args: {
+        quoteAmount,
+      },
+      accounts: {
+        user: this.context.provider.publicKey,
+        project: projectAddress,
+        projectTokenMint: project.projectTokenMint,
+        quoteTokenMint: project.abc.quoteTokenMint,
+        projectTokenTreasury: projectTokenTreasury,
+        quoteTreasury: quoteTreasury,
+        quoteAbcReserve: quoteAbcReserve,
         userQuoteTokenAccount: associatedAddress({ mint: project.abc.quoteTokenMint, owner: this.context.provider.publicKey }),
         systemProgram: anchor.web3.SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
