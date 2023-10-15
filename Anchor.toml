@@ -3,7 +3,10 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-poc = "6fzDcXf8keRc64xq9Si3vXxuUXWTWjAtshG524Pz8FcX"
+poc = "GFWhFATGUM63tockDcMgLtBSC8VnPrLNB6Uuhw4CGVk"
+
+[programs.devnet]
+poc = "GFWhFATGUM63tockDcMgLtBSC8VnPrLNB6Uuhw4CGVk"
 
 [registry]
 url = "https://api.apr.dev"
@@ -17,9 +20,5 @@ wallet = "~/.config/solana/id.json"
 startup_wait = 100000
 
 [scripts]
-#test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
-#test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/initialize/initialize.ts"
-#test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/set-up-abc/integration.ts"
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/integration.ts"
-#test = "yarn run ts-mocha -t 1000000 --parallel true tests/**/*.ts"
+test = "yarn run ts-mocha -t 1000000 --parallel true tests/**/*.ts"
 

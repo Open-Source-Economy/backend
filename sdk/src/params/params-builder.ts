@@ -45,10 +45,10 @@ export class ParamsBuilder {
     };
   }
 
-  async setUpAbc(project: Project, constantMint: BN, constantRedeem: BN, quoteTokenMint: PublicKey): Promise<SetUpAbcParams> {
-    const [projectAddress] = programPda.project(project.owner, project.repository, this.context.program.programId);
-    const quoteTreasury = programPda.treasury(project.owner, project.repository, quoteTokenMint, this.context.program.programId);
-    const [quoteAbcReserve] = programPda.abcReserve(project.owner, project.repository, quoteTokenMint, this.context.program.programId);
+  async setUpAbc(owner: string, repository: string, constantMint: BN, constantRedeem: BN, quoteTokenMint: PublicKey): Promise<SetUpAbcParams> {
+    const [projectAddress] = programPda.project(owner, repository, this.context.program.programId);
+    const quoteTreasury = programPda.treasury(owner, repository, quoteTokenMint, this.context.program.programId);
+    const [quoteAbcReserve] = programPda.abcReserve(owner, repository, quoteTokenMint, this.context.program.programId);
 
     return {
       args: {
@@ -90,6 +90,7 @@ export class ParamsBuilder {
         userQuoteTokenAccount: associatedAddress({ mint: project.abc.quoteTokenMint, owner: this.context.provider.publicKey }),
         systemProgram: anchor.web3.SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
       },
       signers: [],
     };

@@ -16,7 +16,8 @@ pub mod token_program;
 #[doc(hidden)]
 mod util;
 
-declare_id!("6fzDcXf8keRc64xq9Si3vXxuUXWTWjAtshG524Pz8FcX");
+// Should be equal to `solana address -k target/deploy/poc-keypair.json`
+declare_id!("GFWhFATGUM63tockDcMgLtBSC8VnPrLNB6Uuhw4CGVk");
 
 #[program]
 pub mod poc {

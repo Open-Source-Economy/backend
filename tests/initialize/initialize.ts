@@ -10,7 +10,7 @@ describe("initialize", async () => {
   const program: anchor.Program<Poc> = anchor.workspace.Poc as Program<Poc>;
   const connection: anchor.web3.Connection = anchor.getProvider().connection;
 
-  const owner: string = "owner";
+  const owner: string = "owner2";
   const repository: string = "repository";
   const projectTokenKeyPair = Keypair.generate();
 

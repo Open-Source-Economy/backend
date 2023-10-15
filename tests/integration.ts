@@ -5,10 +5,8 @@ import { Fixture } from "./project-fixture";
 import * as assert from "assert";
 import { ABC, AbcUtils, Client, InitializeParams, MathUtils, MintData, Project, RedeemData, SetUpAbcParams } from "../sdk";
 import { Keypair, PublicKey } from "@solana/web3.js";
-import { MintProjectTokenParams } from "../sdk/src/params/mint-project-token";
 import BN from "bn.js";
 import { Decimal } from "decimal.js";
-import { RedeemProjectTokenParams } from "../sdk/src/params/redeem-project-token";
 
 describe("Integration test", async () => {
   const program: anchor.Program<Poc> = anchor.workspace.Poc as Program<Poc>;
@@ -50,7 +48,7 @@ describe("Integration test", async () => {
       const project: Project = await fixture.dataFetcher.getProject(owner, repository);
       quoteTokenMint = await fixture.airdropQuoteToken(user, 1000);
 
-      const params: SetUpAbcParams = await user.paramsBuilder.setUpAbc(project, constantMint, constantRedeem, quoteTokenMint);
+      const params: SetUpAbcParams = await user.paramsBuilder.setUpAbc(project.owner, project.repository, constantMint, constantRedeem, quoteTokenMint);
       await user.setUpAbc(params);
     });
 

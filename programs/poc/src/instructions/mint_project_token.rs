@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::system_program;
+use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 
 use crate::custom_error::CustomError;
@@ -60,12 +61,15 @@ pub struct MintProjectToken<'info> {
     pub quote_abc_reserve: Box<Account<'info, TokenAccount>>,
 
     /// No need to force it to be an associated token account.
+    /// TODO: init_if_needed ? not sure if secure
     #[account(
-        mut,
-        token::mint = project.project_token_mint,
-        token::authority = user
+        init_if_needed,
+        payer = user,
+        associated_token::mint = project_token_mint,
+        associated_token::authority = user,
+        mint::freeze_authority = user
     )]
-    pub user_project_token_account: Box<Account<'info, TokenAccount>>,
+    pub user_project_token_account: Account<'info, TokenAccount>,
 
     /// No need to force it to be an associated token account.
     #[account(
@@ -82,6 +86,8 @@ pub struct MintProjectToken<'info> {
     pub system_program: Program<'info, System>,
 
     pub token_program: Program<'info, Token>,
+
+    pub associated_token_program: Program<'info, AssociatedToken>,
 }
 
 pub fn handler(

@@ -1,7 +1,7 @@
 {
   "name": "@open-source-economy/poc",
   "license": "MIT",
-  "version": "0.0.15",
+  "version": "0.0.22",
   "main": "dist/sdk/index.js",
   "scripts": {
     "build": "rm -r -f dist && npx tsc",

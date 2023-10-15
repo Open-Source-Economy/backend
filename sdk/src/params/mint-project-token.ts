@@ -17,6 +17,7 @@ export type MintProjectTokenParams = {
     userQuoteTokenAccount: PublicKey;
     systemProgram: PublicKey;
     tokenProgram: PublicKey;
+    associatedTokenProgram: PublicKey;
   };
   signers: Signer[];
 };

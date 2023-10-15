@@ -1,8 +1,5 @@
 import { ABC } from "./data-fetcher";
 import BN from "bn.js";
-import * as decimal from "decimal.js";
-import { Buffer } from "buffer";
-import { AccountMeta, PublicKey } from "@solana/web3.js";
 
 export type MintData = {
   quoteAmount: BN;

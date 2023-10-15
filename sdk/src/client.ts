@@ -1,4 +1,4 @@
-import { PublicKey, Transaction, TransactionSignature } from "@solana/web3.js";
+import { PublicKey, Transaction, TransactionInstruction, TransactionSignature } from "@solana/web3.js";
 import { Context } from "./context";
 import { DonateParams, InitializeParams, ParamsBuilder, RedeemProjectTokenParams, SetUpAbcParams } from "./params";
 import { MintProjectTokenParams } from "./params/mint-project-token";
@@ -14,7 +14,7 @@ export class Client {
   readonly context: Context;
   readonly paramsBuilder: ParamsBuilder;
 
-  private readonly skipPreflight: boolean = true;
+  private readonly skipPreflight: boolean = false;
 
   constructor(context: Context) {
     this.context = context;
@@ -35,6 +35,22 @@ export class Client {
       .accounts(params.accounts)
       .transaction();
     return this.context.provider.sendAndConfirm(tx, params.signers, { skipPreflight: this.skipPreflight });
+  }
+
+  async initializeAndSetUpAbc(initializeParams: InitializeParams, setUpAbcParams: SetUpAbcParams): Promise<TransactionSignature> {
+    const initializeIx: TransactionInstruction = await this.context.program.methods
+      .initialize(initializeParams.args.owner, initializeParams.args.repository, initializeParams.args.projectBump)
+      .accounts(initializeParams.accounts)
+      .instruction();
+
+    const setUpAbcIx: TransactionInstruction = await this.context.program.methods
+      .setUpAbc(setUpAbcParams.args.constantMint, setUpAbcParams.args.constantRedeem)
+      .accounts(setUpAbcParams.accounts)
+      .instruction();
+
+    const tx: Transaction = new Transaction().add(initializeIx).add(setUpAbcIx);
+
+    return this.context.provider.sendAndConfirm(tx, initializeParams.signers.concat(setUpAbcParams.signers), { skipPreflight: this.skipPreflight });
   }
 
   async mintProjectToken(params: MintProjectTokenParams): Promise<TransactionSignature> {
