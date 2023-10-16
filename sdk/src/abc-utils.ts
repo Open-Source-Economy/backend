@@ -23,6 +23,7 @@ export class AbcUtils {
     this.slippage = 50;
   }
 
+  // TODO: I forgot in the back to take into account the number of decimals
   getMintDataFromQuote(quoteAmount: BN): MintData {
     const quoteAmountQ64_64: BN = quoteAmount.shln(64);
     // unit: [quote] / [quote / pt] = [pt]
@@ -38,18 +39,7 @@ export class AbcUtils {
     };
   }
 
-  // getMintDataFromProjectToken(projectTokenAmount: BN): MintProjectTokenData {
-  //   const quoteAmount: BN;
-  //   const expectedProjectTokenMinted: BN;
-  //   const minProjectTokenMinted: BN;
-  //
-  //   return {
-  //     quoteAmount,
-  //     expectedProjectTokenMinted,
-  //     minProjectTokenMinted,
-  //   }
-  // }
-
+  // TODO: I forgot in the back to take into account the number of decimals
   getRedeemDataFromProjectToken(projectTokenAmount: BN): RedeemData {
     // unit: [pt] * [quote / pt]  = [quote]
     // fixpoint: Q128_0 * Q96_32  >> 32 = Q96_32  >> 32 = Q128_0
