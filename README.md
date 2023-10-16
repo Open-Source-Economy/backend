@@ -2,7 +2,7 @@
 # Introduction
 Congratulations, you've stumbled upon Open-Source-Economy POC— the future of open-source competitiveness.
 
-[Live website link](https://frontend-poc-dddeafe87ed9.herokuapp.com/)
+[Live website link](https://frontend-alpha-umber.vercel.app/)
 
 Deployed only DevNet
 
