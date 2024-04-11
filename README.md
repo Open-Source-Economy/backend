@@ -285,3 +285,11 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts --network localhost
 ```shell
 npx hardhat run scripts/deploy.ts --network localhost
 ```
+
+## Linter
+
+Run linter
+
+```shell
+npm run solhint
+```
