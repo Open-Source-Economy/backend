@@ -14,7 +14,7 @@ contract IssueEscrow {
     mapping(string => uint256) public issuesDeposits;
 
     modifier onlyAgent() {
-        require(msg.sender == escrowAgent, "Only the escrow agent can do this action");
+        require(msg.sender == escrowAgent, "only the escrow agent can do this action");
         _;
     }
 
@@ -35,7 +35,6 @@ contract IssueEscrow {
         repoMantainerAddress.transfer(payment);
     }
 
-    // TODO: getIssueAmount
     function getIssueAmount(string memory gitIssueURL) public view returns (uint256 issueDeposit) {
         return issuesDeposits[gitIssueURL];
     }
