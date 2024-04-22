@@ -1,14 +1,11 @@
 {
   "compilerOptions": {
-    "types": ["node", "mocha", "chai"],
-    "typeRoots": ["./node_modules/@types"],
-    "lib": ["es2015"],
+    "target": "es2020",
     "module": "commonjs",
-    "target": "es6",
-    "outDir": "dist",
-    "declaration": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
-  },
-  "exclude": ["scripts/**/*", "tests/**/*", "sdk/tests/**/*", "dist"]
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  }
 }
