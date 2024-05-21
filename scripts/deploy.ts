@@ -1,9 +1,8 @@
-import { ethers } from 'hardhat';
+import { ethers } from "hardhat";
 
 async function deploy() {
-
   // const IssueEscrowContract = await ethers.deployContract('EscrowSimple', []);
-  const IssueEscrowContract = await ethers.deployContract('IssueEscrow', []);
+  const IssueEscrowContract = await ethers.deployContract("IssueEscrow", []);
 
   await IssueEscrowContract.waitForDeployment();
 

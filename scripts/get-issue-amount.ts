@@ -1,19 +1,32 @@
-import '@nomicfoundation/hardhat-ethers';
-import { ethers } from 'hardhat';
+import "@nomicfoundation/hardhat-ethers";
+import { ethers } from "hardhat";
 
-const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
-const gitIssueURL = 'https://github.com/neovim/neovim/issues/28234';
+const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const gitIssueURL = "https://github.com/neovim/neovim/issues/28234";
 
 async function getIssueAmount(gitIssueURL: string) {
-  const [escrowAgent, funder, mantainer, addr3, addr4, addr5, addr6, addr7, addr8, addr9] =
-    await ethers.getSigners();
-  const escrowContract = await ethers.getContractAt('IssueEscrow', contractAddress);
+  const [
+    escrowAgent,
+    funder,
+    mantainer,
+    addr3,
+    addr4,
+    addr5,
+    addr6,
+    addr7,
+    addr8,
+    addr9,
+  ] = await ethers.getSigners();
+  const escrowContract = await ethers.getContractAt(
+    "IssueEscrow",
+    contractAddress,
+  );
   // await escrowContract.fundIssue(gitIssueURL, { value: ethers.parseEther('0.1') });
   const tx = await escrowContract
     .connect(escrowAgent)
     // .getIssueAmount(gitIssueURL);
-    .getIssueAmount('ciao');
-  console.log(tx)
+    .getIssueAmount("ciao");
+  console.log(tx);
 }
 
 // alice staging wallet
