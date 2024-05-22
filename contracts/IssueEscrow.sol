@@ -1,4 +1,4 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.24;
 
 // Importing IERC20 and Strings from OpenZeppelin's contract library
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -15,6 +15,9 @@ contract IssueEscrow {
     address public fundingCurrencyAddress;
     // Track funding for each issue
     mapping(string => uint256) public issuesFunding;
+
+    // Event to emit when an issue is funded
+    event IssueFunded(string owner, string repository, uint16 number, uint256 amount);
 
     constructor() {
         escrowAgent = msg.sender;
@@ -45,6 +48,8 @@ contract IssueEscrow {
         );
 
         issuesFunding[issueKey] += amount;
+
+        emit IssueFunded(owner, repository, number, amount);
     }
 
     // Send funds to the contributors that have fixed the issue
