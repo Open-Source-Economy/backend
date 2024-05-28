@@ -293,3 +293,24 @@ Run linter
 ```shell
 npm run solhint
 ```
+```fix the IssueEscrow contract
+
+	The return value of transferFrom function is not boolean.
+	Therefore, a series of errors may occur when calling require function.
+
+```old version	
+    require(
+            fundingCurrency.transferFrom(msg.sender, address(this), amount),
+            string(abi.encodePacked("Transfer of the funding amount failed. Address: ", fundingCurrencyAddress, ", Amount: ", Strings.toString(amount)))
+        );
+```
+new version
+(bool success, bytes memory data) = address(fundingCurrency).call(
+abi.encodeWithSelector(fundingCurrency.transferFrom.selector, msg.sender, address(this), amount)
+);
+
+    require(
+        success,
+        string(abi.encodePacked("Transfer of the funding amount failed. Address: ", fundingCurrencyAddress, ", Amount: ", Strings.toString(amount)))
+    );
+

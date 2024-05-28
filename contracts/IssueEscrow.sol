@@ -42,8 +42,12 @@ contract IssueEscrow {
 
         IERC20 fundingCurrency = IERC20(fundingCurrencyAddress);
 
+        (bool success, bytes memory data) = address(fundingCurrency).call(
+            abi.encodeWithSelector(fundingCurrency.transferFrom.selector, msg.sender, address(this), amount)
+        );
+
         require(
-            fundingCurrency.transferFrom(msg.sender, address(this), amount),
+            success,
             string(abi.encodePacked("Transfer of the funding amount failed. Address: ", fundingCurrencyAddress, ", Amount: ", Strings.toString(amount)))
         );
 
