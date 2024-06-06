@@ -41,7 +41,7 @@ contract IssueEscrow {
         string memory issueKey = generateIssueKey(owner, repository, number);
 
         IERC20 fundingCurrency = IERC20(fundingCurrencyAddress);
-
+        
         (bool success, bytes memory data) = address(fundingCurrency).call(
             abi.encodeWithSelector(fundingCurrency.transferFrom.selector, msg.sender, address(this), amount)
         );
