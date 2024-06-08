@@ -26,24 +26,22 @@ sequenceDiagram
     Stripe->>CompanyBankAccount: send(amount=100$)
     deactivate Stripe
     
+    note over Binance: Binance account has been previously <br/>funded with a bag of $
+    Gateway->>Binance: swap(amount=100$, to=USDC)
+    activate Binance
+    Binance-->>Gateway: USDCAmount
+    deactivate Binance
+
+    note over CompanyWallet: Company wallet has been previously <br/> funded with a bag of USDC
+    Gateway->>SmartContract: swap(amount=USDCAmount, to=LIN, signer=CompanyWallet)
+    activate SmartContract
+   
+    CompanyWallet->>SmartContract: send(amount=USDCAmount)
+    SmartContract->>SmartContract : mint(LINAmount)
+    SmartContract->>SmartContract : fund(amount=LINAmount, what=Linux_issue_1)
     
-        note over Binance: Binance account has been previously <br/>funded with a bag of $
-        Gateway->>Binance: swap(amount=100$, to=USDC)
-        activate Binance
-        Binance-->>Gateway: USDCAmount
-        deactivate Binance
-
-        note over CompanyWallet: Company wallet has been previously <br/> funded with a bag of USDC
-        Gateway->>SmartContract: swap(amount=USDCAmount, to=LIN, signer=CompanyWallet)
-        activate SmartContract
-       
-        CompanyWallet->>SmartContract: send(amount=USDCAmount)
-        SmartContract->>SmartContract : mint(LINAmount)
-        SmartContract->>SmartContract : fund(amount=LINAmount, what=Linux_issue_1)
-        
-        SmartContract-->>Gateway: ok
-        deactivate SmartContract
-
+    SmartContract-->>Gateway: ok
+    deactivate SmartContract
 
     deactivate Gateway
 ```
